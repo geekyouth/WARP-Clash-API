@@ -1,12 +1,26 @@
 version: "3.8"
+
+networks:
+  fullstack:
+    name: fullstack
+    ipam:
+      config:
+        - subnet: 172.16.1.0/24
+
 services:
   warp-clash:
-    build: .
+    image: geekyouth/warp-clash-api:v0.1.0.20240130
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "21001:3000"
-    env_file:
-      - .env.local
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
     volumes:
       - ./config:/app/config
       - ./account:/app/account
       - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      fullstack:
